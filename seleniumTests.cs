@@ -1,127 +1,98 @@
-using System;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Support.UI;
+using System;
 
-namespace SeleniumTests
+namespace Testing_Final
 {
     [TestClass]
-    public class UntitledTestCase
+    public class UnitTest1
     {
-        private static IWebDriver driver;
-        private StringBuilder verificationErrors;
-        private static string baseURL;
-        private bool acceptNextAlert = true;
 
-        [ClassInitialize]
-        public static void InitializeClass(TestContext testContext)
-        {
-            driver = new ChromeDriver();
-            baseURL = "https://www.google.com/";
-        }
 
-        [ClassCleanup]
-        public static void CleanupClass()
+        public bool CanDrive(int age)
         {
-            try
-            {
-                //driver.Quit();// quit does not close the window
-                driver.Close();
-                driver.Dispose();
-            }
-            catch (Exception)
-            {
-                // Ignore errors if unable to close the browser
-            }
-        }
 
-        [TestInitialize]
-        public void InitializeTest()
-        {
-            verificationErrors = new StringBuilder();
-        }
+            const int drivingAge = 16; 
+            return age >= drivingAge;
 
-        [TestCleanup]
-        public void CleanupTest()
-        {
-            Assert.AreEqual("", verificationErrors.ToString());
         }
 
 
-        //TEST CASES START ***************************
+        //TEST BOUNDARIES OF 16
         [TestMethod]
-        public void ThePassingCaseTest()
+        public void TestMethod15()
         {
-            driver.Navigate().GoToUrl("https://letsusedata.com/");
-            driver.FindElement(By.Id("txtUser")).Clear();
-            driver.FindElement(By.Id("txtUser")).SendKeys("s-aiden.romine@lwtech.edu");
-            driver.FindElement(By.Id("txtPassword")).Clear();
-            driver.FindElement(By.Id("txtPassword")).SendKeys("Horspool1!");
-            driver.FindElement(By.Id("javascriptLogin")).Click();
+            Assert.AreEqual(false, CanDrive(15));
         }
 
         [TestMethod]
-        public void TheFailingCaseTest()
+        public void TestMethod16()
         {
-            driver.Navigate().GoToUrl("https://letsusedata.com/index.html");
-            driver.FindElement(By.Id("txtUser")).Clear();
-            driver.FindElement(By.Id("txtUser")).SendKeys("s-aiden.romine@lwtech.edu");
-            driver.FindElement(By.Id("txtPassword")).Clear();
-            driver.FindElement(By.Id("txtPassword")).SendKeys("bfbwiwf");
-            driver.FindElement(By.Id("javascriptLogin")).Click();
-        }
-        //TEST CASES END *****************************
-
-        private bool IsElementPresent(By by)
-        {
-            try
-            {
-                driver.FindElement(by);
-                return true;
-            }
-            catch (NoSuchElementException)
-            {
-                return false;
-            }
+            Assert.AreEqual(true, CanDrive(16));
         }
 
-        private bool IsAlertPresent()
+        [TestMethod]
+        public void TestMethod17()
         {
-            try
-            {
-                driver.SwitchTo().Alert();
-                return true;
-            }
-            catch (NoAlertPresentException)
-            {
-                return false;
-            }
+            Assert.AreEqual(true, CanDrive(17));
         }
 
-        private string CloseAlertAndGetItsText()
+
+
+        //TEST ZERO, PLUS 1 AND MINUS 1
+        [TestMethod]
+        public void TestMethodNeg1()
         {
-            try
-            {
-                IAlert alert = driver.SwitchTo().Alert();
-                string alertText = alert.Text;
-                if (acceptNextAlert)
-                {
-                    alert.Accept();
-                }
-                else
-                {
-                    alert.Dismiss();
-                }
-                return alertText;
-            }
-            finally
-            {
-                acceptNextAlert = true;
-            }
+            Assert.AreEqual(false, CanDrive(-1));
         }
+
+        [TestMethod]
+        public void TestMethod0()
+        {
+            Assert.AreEqual(false, CanDrive(0));
+        }
+
+        [TestMethod]
+        public void TestMethodPos1()
+        {
+            Assert.AreEqual(false, CanDrive(1));
+        }
+
+
+        //TEST MAX AND MIN, ALONG WITH MAX AND MIN OFFSET BY 1
+        [TestMethod]
+        public void TestMethodMax()
+        {
+            Assert.AreEqual(true, CanDrive(int.MaxValue));
+        }
+
+        [TestMethod]
+        public void TestMethodMaxMinus1()
+        {
+            Assert.AreEqual(true, CanDrive(int.MaxValue-1));
+        }
+
+        [TestMethod]
+        public void TestMethodMin()
+        {
+            Assert.AreEqual(false, CanDrive(int.MinValue));
+        }
+
+        [TestMethod]
+        public void TestMethodMinPlus1()
+        {
+            Assert.AreEqual(false, CanDrive(int.MinValue+1));
+        }
+
+        //TESTING FOR OUT OF RANGE RESULTS. LOOKS LIKE NOT APPLICABLE FOR THE PASSED FUNCTION
+        //Test that fails (True/False test)
+        //[TestMethod]
+        //[ExpectedException(typeof(ArgumentOutOfRangeException))]
+        // public void TestMethodIntMax()
+        //{
+        //    CanDrive(int.MaxValue);
+        // }
+
+
+
     }
 }
