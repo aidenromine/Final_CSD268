@@ -1,98 +1,135 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 
-namespace Testing_Final
+namespace SeleniumTests
 {
     [TestClass]
-    public class UnitTest1
+    public class UntitledTestCase
     {
+        private static IWebDriver driver;
+        private StringBuilder verificationErrors;
+        private static string baseURL;
+        private bool acceptNextAlert = true;
 
-
-        public bool CanDrive(int age)
+        [ClassInitialize]
+        public static void InitializeClass(TestContext testContext)
         {
+            driver = new ChromeDriver();
+            baseURL = "https://www.google.com/";
+        }
 
-            const int drivingAge = 16; 
-            return age >= drivingAge;
+        [ClassCleanup]
+        public static void CleanupClass()
+        {
+            try
+            {
+                //driver.Quit();// quit does not close the window
+                driver.Close();
+                driver.Dispose();
+            }
+            catch (Exception)
+            {
+                // Ignore errors if unable to close the browser
+            }
+        }
 
+        [TestInitialize]
+        public void InitializeTest()
+        {
+            verificationErrors = new StringBuilder();
+        }
+
+        [TestCleanup]
+        public void CleanupTest()
+        {
+            Assert.AreEqual("", verificationErrors.ToString());
         }
 
 
-        //TEST BOUNDARIES OF 16
+        //TEST CASES START ***************************
         [TestMethod]
-        public void TestMethod15()
+        public void PassingCaseTest()
         {
-            Assert.AreEqual(false, CanDrive(15));
-        }
+            driver.Navigate().GoToUrl("https://letsusedata.com/index.html");
+            driver.FindElement(By.Id("txtUser")).Click();
+            driver.FindElement(By.Id("txtUser")).Clear();
+            driver.FindElement(By.Id("txtUser")).SendKeys("test1");
+            driver.FindElement(By.Id("txtPassword")).Click();
+            driver.FindElement(By.Id("txtPassword")).Clear();
+            driver.FindElement(By.Id("txtPassword")).SendKeys("Test12456");
+            driver.FindElement(By.Id("javascriptLogin")).Click();
 
-        [TestMethod]
-        public void TestMethod16()
-        {
-            Assert.AreEqual(true, CanDrive(16));
-        }
-
-        [TestMethod]
-        public void TestMethod17()
-        {
-            Assert.AreEqual(true, CanDrive(17));
-        }
-
-
-
-        //TEST ZERO, PLUS 1 AND MINUS 1
-        [TestMethod]
-        public void TestMethodNeg1()
-        {
-            Assert.AreEqual(false, CanDrive(-1));
-        }
-
-        [TestMethod]
-        public void TestMethod0()
-        {
-            Assert.AreEqual(false, CanDrive(0));
-        }
-
-        [TestMethod]
-        public void TestMethodPos1()
-        {
-            Assert.AreEqual(false, CanDrive(1));
-        }
-
-
-        //TEST MAX AND MIN, ALONG WITH MAX AND MIN OFFSET BY 1
-        [TestMethod]
-        public void TestMethodMax()
-        {
-            Assert.AreEqual(true, CanDrive(int.MaxValue));
+            Assert.AreEqual("test1", driver.FindElement(By.Id("txtUser")).GetAttribute("value"));
+            Assert.AreEqual("Test12456", driver.FindElement(By.Id("txtPassword")).GetAttribute("value"));
         }
 
         [TestMethod]
-        public void TestMethodMaxMinus1()
+        public void FailingCaseTest()
         {
-            Assert.AreEqual(true, CanDrive(int.MaxValue-1));
+            driver.Navigate().GoToUrl("https://letsusedata.com/index.html");
+            driver.FindElement(By.Id("txtUser")).Clear();
+            driver.FindElement(By.Id("txtUser")).SendKeys("test1");
+            driver.FindElement(By.Id("txtPassword")).Clear();
+            driver.FindElement(By.Id("txtPassword")).SendKeys("test1234");
+            driver.FindElement(By.Id("javascriptLogin")).Click();
+
+            Assert.AreEqual("test1", driver.FindElement(By.Id("txtUser")).GetAttribute("value"));
+            Assert.AreEqual("Test12456", driver.FindElement(By.Id("txtPassword")).GetAttribute("value"));
+        }
+        //TEST CASES END *****************************
+
+        private bool IsElementPresent(By by)
+        {
+            try
+            {
+                driver.FindElement(by);
+                return true;
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
         }
 
-        [TestMethod]
-        public void TestMethodMin()
+        private bool IsAlertPresent()
         {
-            Assert.AreEqual(false, CanDrive(int.MinValue));
+            try
+            {
+                driver.SwitchTo().Alert();
+                return true;
+            }
+            catch (NoAlertPresentException)
+            {
+                return false;
+            }
         }
 
-        [TestMethod]
-        public void TestMethodMinPlus1()
+        private string CloseAlertAndGetItsText()
         {
-            Assert.AreEqual(false, CanDrive(int.MinValue+1));
+            try
+            {
+                IAlert alert = driver.SwitchTo().Alert();
+                string alertText = alert.Text;
+                if (acceptNextAlert)
+                {
+                    alert.Accept();
+                }
+                else
+                {
+                    alert.Dismiss();
+                }
+                return alertText;
+            }
+            finally
+            {
+                acceptNextAlert = true;
+            }
         }
-
-        //TESTING FOR OUT OF RANGE RESULTS. LOOKS LIKE NOT APPLICABLE FOR THE PASSED FUNCTION
-        //Test that fails (True/False test)
-        //[TestMethod]
-        //[ExpectedException(typeof(ArgumentOutOfRangeException))]
-        // public void TestMethodIntMax()
-        //{
-        //    CanDrive(int.MaxValue);
-        // }
-
-
-
     }
 }
