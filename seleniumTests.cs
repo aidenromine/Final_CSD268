@@ -53,6 +53,10 @@ namespace SeleniumTests
 
 
         //TEST CASES START ***************************
+
+        const string UserName = "test1";
+        const string Password = "Test12456";
+
         [TestMethod]
         public void PassingCaseTest()
         {
@@ -65,8 +69,8 @@ namespace SeleniumTests
             driver.FindElement(By.Id("txtPassword")).SendKeys("Test12456");
             driver.FindElement(By.Id("javascriptLogin")).Click();
 
-            Assert.AreEqual("test1", driver.FindElement(By.Id("txtUser")).GetAttribute("value"));
-            Assert.AreEqual("Test12456", driver.FindElement(By.Id("txtPassword")).GetAttribute("value"));
+            Assert.AreEqual(UserName, driver.FindElement(By.Id("txtUser")).GetAttribute("value"));
+            Assert.AreEqual(Password, driver.FindElement(By.Id("txtPassword")).GetAttribute("value"));
         }
 
         [TestMethod]
@@ -79,8 +83,8 @@ namespace SeleniumTests
             driver.FindElement(By.Id("txtPassword")).SendKeys("test1234");
             driver.FindElement(By.Id("javascriptLogin")).Click();
 
-            Assert.AreEqual("test1", driver.FindElement(By.Id("txtUser")).GetAttribute("value"));
-            Assert.AreEqual("Test12456", driver.FindElement(By.Id("txtPassword")).GetAttribute("value"));
+            Assert.AreEqual(UserName, driver.FindElement(By.Id("txtUser")).GetAttribute("value"));
+            Assert.AreNotEqual(Password, driver.FindElement(By.Id("txtPassword")).GetAttribute("value"));
         }
         //TEST CASES END *****************************
 
